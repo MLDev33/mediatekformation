@@ -63,16 +63,20 @@ class PlaylistsController extends AbstractController
         $categories = $this->categorieRepository->findAll();
         return $this->render(self::CHEMINPLAYLISTS, [
                 'playlists' => $playlists,
-                'categories' => $categories
+                'categories' => $categories,
         ]);
     }
 
-    #[Route('/playlists/tri/{champ}/{ordre}', name: 'playlists.sort')]
+    #[Route('/playlists/tri/{champ}/{ordre'
+        . '}', name: 'playlists.sort')]
     public function sort($champ, $ordre): Response
     {
 
-        if ($champ === 'name') {
+        if ($champ === 'name' ) {
             $playlists = $this->playlistRepository->findAllOrderByName($ordre);
+        }
+        if ($champ === 'nbFormations' ) {
+            $playlists = $this->playlistRepository->findAllOrderByFormationsCount($ordre);
         }
         $categories = $this->categorieRepository->findAll();
         return $this->render(self::CHEMINPLAYLISTS, [
