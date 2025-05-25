@@ -32,12 +32,12 @@ class AdminFormationsController extends AbstractController
     /**
      * Chemin du template pour la liste des formations
      */
-    private const CHEMINFORMATIONS = "admin/admin.formations.html.twig";
+    private const CHEMINFORMATIONS = "admin/formations/admin.formations.html.twig";
 
     /**
      * Chemin du template pour l'affichage d'une seule formation
      */
-    private const CHEMINFORMATION = "admin/admin.formation.html.twig";
+    private const CHEMINFORMATION = "admin/formations/admin.formation.html.twig";
 
     /**
      * Constructeur du contrôleur.
@@ -56,7 +56,7 @@ class AdminFormationsController extends AbstractController
      *
      * @return Response
      */
-    #[Route('/admin', name: 'admin.formations')]
+    #[Route('/admin/formations', name: 'admin.formations')]
     public function index(): Response
     {
         $formations = $this->formationRepository->findAll();
@@ -157,7 +157,7 @@ class AdminFormationsController extends AbstractController
             return $this->redirectToRoute('admin.formations');
         }
 
-        return $this->render("admin/admin.formation.edit.html.twig", [
+        return $this->render("admin/formations/admin.formation.edit.html.twig", [
                 'formation' => $formation,
                 'formformation' => $formFormation->createView()
         ]);
@@ -181,7 +181,7 @@ class AdminFormationsController extends AbstractController
             return $this->redirectToRoute('admin.formations');
         }
 
-        return $this->render("admin/admin.formation.add.html.twig", [
+        return $this->render("admin/formations/admin.formation.add.html.twig", [
                 'formation' => $formation,
                 'formformation' => $formFormation->createView()
         ]);
