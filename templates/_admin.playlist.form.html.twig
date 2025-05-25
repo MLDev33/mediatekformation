@@ -1,18 +1,23 @@
-{% extends "basefront.html.twig" %}
-{% block body %}
-    <div class="row mt-3">
-        <div class="col">
-            <h4 class="text-info mt-5">{{ playlist.name }}</h4>
+{{ form_start(formplaylist) }}
+<div class="row mt-3">
+    <div class="col">
+        <h4 class="text-info mt-5">{{ form_row(formplaylist.name) }}</h4>
+        {% if playlist and playlist.id %}       
             <strong>catégories : </strong>
-                <!-- boucle pour afficher les catégories -->
-                {% set anccategorie = '' %}
-                {% for playlist in playlistcategories %}
-                    {{ playlist.name }}&nbsp;
-                {% endfor %}
-            <br /><br />
-            <strong>description :</strong><br />
-                {{ playlist.description|nl2br }}
+            <!-- boucle pour afficher les catégories -->
+            {% set anccategorie = '' %}
+            {% for playlist in playlistcategories %}
+                {{ playlist.name }}&nbsp;
+            {% endfor %}
+        {% endif %}       
+        <br /><br />
+        <strong>{{ form_row(formplaylist.description, {'attr': {'class': 'form-control', 'style': 'height: 300px;'}}) }}</strong>
+        <br />
+        <div class="container d-flex align-items-center justify-content-center">
+            {{ form_row(formplaylist.submit) }}
         </div>
+    </div>
+    {% if playlist and playlist.id %}
         <div class="col">
             <!-- boucle sur l'affichage des formations -->
             {% for formation in playlistformations %}
@@ -33,5 +38,6 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
-{% endblock %}
+    {% endif %}
+</div>
+{{ form_end(formplaylist) }}
