@@ -34,6 +34,11 @@ class FormationsController extends AbstractController
      */
     private const CHEMINFORMATIONS = "pages/formations.html.twig";
 
+    /**
+     * Début de chemin vers une formations
+     */
+    private const CHEMINFORMATION = "pages/formation.html.twig";
+
     public function __construct(FormationRepository $formationRepository, CategorieRepository $categorieRepository)
     {
         $this->formationRepository = $formationRepository;
@@ -76,11 +81,11 @@ class FormationsController extends AbstractController
         ]);
     }
 
-    #[Route('/formations/formation/{id}', name: 'formations.showone')]
+    #[Route('/formations/{id<\d+>}', name: 'formations.showone')]
     public function showOne($id): Response
     {
         $formation = $this->formationRepository->find($id);
-        return $this->render("pages/formation.html.twig", [
+        return $this->render(self::CHEMINFORMATION, [
                 'formation' => $formation
         ]);
     }
