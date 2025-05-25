@@ -111,12 +111,12 @@ class Formation
 
     public function getMiniature(): ?string
     {
-        return self::CHEMINIMAGE.$this->videoId."/default.jpg";
+        return $this->videoId ? self::CHEMINIMAGE.$this->videoId."/default.jpg" : null;
     }
 
     public function getPicture(): ?string
     {
-        return self::CHEMINIMAGE.$this->videoId."/hqdefault.jpg";
+        return $this->videoId ? self::CHEMINIMAGE.$this->videoId."/hqdefault.jpg" : null;
     }
 
     public function getPlaylist(): ?playlist
