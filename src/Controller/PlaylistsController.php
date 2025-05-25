@@ -99,7 +99,7 @@ class PlaylistsController extends AbstractController
         ]);
     }
 
-    #[Route('/playlists/playlist/{id}', name: 'playlists.showone')]
+    #[Route('/playlists/playlist/{id<\d+>}', name: 'playlists.showone')]
     public function showOne($id): Response
     {
         $playlist = $this->playlistRepository->find($id);

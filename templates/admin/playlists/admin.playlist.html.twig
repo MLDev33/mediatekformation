@@ -1,4 +1,4 @@
-{% extends "basefront.html.twig" %}
+{% extends "baseadmin.html.twig" %}
 {% block body %}
     <div class="row mt-3">
         <div class="col">
@@ -19,13 +19,13 @@
                 <div class="row mt-1">
                     <div class="col-md-auto">
                         {% if formation.miniature %}
-                            <a href="{{ path('formations.showone', {id:formation.id}) }}">
+                            <a href="{{ path('admin.formations.showone', {id:formation.id}) }}">
                                 <img src="{{ formation.miniature }}" alt="formation.miniature">
                             </a>
                         {% endif %}  
                     </div>
                     <div class="col d-flex align-items-center">
-                        <a href="{{ path('formations.showone', {id:formation.id}) }}" 
+                        <a href="{{ path('admin.formations.showone', {id:formation.id}) }}" 
                            class="link-secondary text-decoration-none">
                             {{ formation.title }}
                         </a>          
@@ -33,5 +33,6 @@
                 </div>
             {% endfor %}
         </div>
+        
     </div>
 {% endblock %}

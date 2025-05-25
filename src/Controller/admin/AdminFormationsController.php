@@ -119,7 +119,7 @@ class AdminFormationsController extends AbstractController
     {
         $formation = $this->formationRepository->find($id);
 
-        return $this->render(self::CHEMINFORMATION, [// Renvoie vers la page qui affiche une formation
+        return $this->render(self::CHEMINFORMATION, [ // Renvoie vers la page qui affiche une formation
                 'formation' => $formation,
         ]);
     }
@@ -130,7 +130,7 @@ class AdminFormationsController extends AbstractController
      * @param type $id
      * @return Response
      */
-    #[Route('/admin/formation/supprimer/{id}', name: 'admin.formation.supprimer')]
+    #[Route('/admin/formation/supprimer/{id<\d+>}', name: 'admin.formation.supprimer')]
     public function supprimer($id): Response
     {
         $formation = $this->formationRepository->find($id);
@@ -145,7 +145,7 @@ class AdminFormationsController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/admin/formation/modifier/{id}', name: 'admin.formation.modifier')]
+    #[Route('/admin/formation/modifier/{id<\d+>}', name: 'admin.formation.modifier')]
     public function modifier($id, Request $request): Response
     {
         $formation = $this->formationRepository->find($id);
