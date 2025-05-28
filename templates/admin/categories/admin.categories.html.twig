@@ -1,0 +1,66 @@
+{% extends "baseadmin.html.twig" %}
+{% block body %}
+    {% for label, messages in app.flashes%}
+        {% if label in ['success', 'warning'] %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+    <div class="text-end">
+    {% include ('_admin.categorie.form.html.twig')  %}
+    </div>
+    <br />
+    <table class="table table-striped" aria-hidden="true">
+        <thead>
+            <tr>
+                <th class="text-left align-top" scope="col">
+                    catégories<br />
+                    <a href="{{ path('admin.categories.sort', {champ:'name', ordre:'ASC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true"><</a>
+                    <a href="{{ path('admin.categories.sort', {champ:'name', ordre:'DESC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true">></a>
+                    <form class="form-inline mt-1" method="POST" action="{{ path('admin.categories.findallcontain', {champ:'name'}) }}">
+                        <div class="form-group mr-1 mb-2">
+                            <input type="text" class="sm" name="recherche" value="{% if valeur|default and not table|default %}{{ valeur }}{% endif %}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('filtre_name') }}">
+                            <button type="submit" class="btn btn-info mb-2 btn-sm">filtrer</button>
+                        </div>
+                    </form>                    
+                </th>
+                <th class="text-left align-top" scope="col">
+                    formations<br /> 
+                    <a href="{{ path('admin.categories.sort', {champ:'nbFormations', ordre:'ASC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true"><</a>
+                    <a href="{{ path('admin.categories.sort', {champ:'nbFormations', ordre:'DESC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true">></a>   
+                </th>
+                <th class="text-left align-top" scope="col">
+                    Actions<br />
+                </th>			
+            </tr>
+        </thead>
+        <tbody>
+            <!-- boucle sur les playlists -->
+            {% if categories|length > 0 %}
+                {% for k in 0..categories|length-1 %}
+                    <tr class="align-middle">
+                        <td>
+                            <h5 class="text-info">
+                                {{ categories[k].name }}
+                            </h5>
+                        </td>                  
+                        <td>
+                            {{categories[k].formationsCount()}}
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ path('admin.categorie.supprimer', {id: categories[k].id}) }}" style="display:inline;" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer la catégorie {{ categories[k].name }} ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('supprimer_categorie_' ~ categories[k].id) }}">
+                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            </form>
+                        </td>                        
+                    </tr>
+                {% endfor %}	
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock %}
