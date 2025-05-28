@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
 class Categorie
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -71,5 +72,14 @@ class Categorie
         }
 
         return $this;
+    }
+
+    /**
+     * Retourne le nombre de formations de la catégorie
+     * @return int
+     */
+    public function getFormationsCount(): int
+    {
+        return $this->formations->count();
     }
 }

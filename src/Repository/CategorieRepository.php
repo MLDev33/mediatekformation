@@ -45,5 +45,66 @@ class CategorieRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
     }
-}
 
+    /**
+     * Retourne toutes les catégories triées sur le nom
+     * @param type $champ
+     * @param type $ordre
+     * @return Playlist[]
+     */
+    public function findAllOrderByName($ordre): array
+    {
+        return $this->createQueryBuilder('c')
+                ->leftjoin('c.formations', 'f')
+                ->groupBy('c.id')
+                ->orderBy('c.name', $ordre)
+                ->getQuery()
+                ->getResult();
+    }
+
+    public function findByContainValue($champ, $valeur, $table = ""): array
+    {
+        if ($valeur == "") {
+            return $this->findAllOrderByName('ASC');
+        }
+        if ($table == "") {
+            return $this->createQueryBuilder('c')
+                    ->leftjoin('c.formations', 'f')
+                    ->where('c.' . $champ . ' LIKE :valeur')
+                    ->setParameter('valeur', '%' . $valeur . '%')
+                    ->groupBy('c.id')
+                    ->orderBy('c.name', 'ASC')
+                    ->getQuery()
+                    ->getResult();
+        } else {
+            return $this->createQueryBuilder('c')
+                    ->leftjoin('c.formations', 'f')
+                    ->leftjoin('f.categories', 'c')
+                    ->where('c.' . $champ . ' LIKE :valeur')
+                    ->setParameter('valeur', '%' . $valeur . '%')
+                    ->groupBy('c.id')
+                    ->orderBy('c.name', 'ASC')
+                    ->getQuery()
+                    ->getResult();
+        }
+    }
+
+    public function findAllOrderByFormationsCount($ordre): array
+    {
+        return $this->createQueryBuilder('c')
+                ->leftjoin('c.formations', 'f')
+                ->groupBy('c.id')
+                ->orderBy('COUNT(c.id)', $ordre)
+                ->getQuery()
+                ->getResult();
+    }
+
+    public function findOneByName(string $name): ?Categorie
+    {
+        return $this->createQueryBuilder('c')
+                ->where('LOWER(c.name) = :name')
+                ->setParameter('name', strtolower($name))
+                ->getQuery()
+                ->getOneOrNullResult();
+    }
+}

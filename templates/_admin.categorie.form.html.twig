@@ -1,0 +1,11 @@
+<div class="text-end">
+    {{ form_start(formcategorie) }}
+    <div class="d-flex justify-content-end align-items-center gap-2">
+        <label for="{{ formcategorie.name.vars.id }}" class="col-form-label mb-0">
+            {{ formcategorie.name.vars.label }}
+        </label>
+        {{ form_widget(formcategorie.name, { 'attr': {'class': 'form-control form-control-sm w-auto'} }) }}
+        <button type="submit" class="btn btn-primary btn-sm">Ajouter</button>
+    </div>
+    {{ form_end(formcategorie) }}
+</div>
