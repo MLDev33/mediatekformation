@@ -9,6 +9,14 @@
     </head>
     <body>
         <!-- entête -->
+        <div class="container text-end">
+            <!-- connexion-->
+                <!-- choix d'un accès admin uniquement via l'url admin/... -->
+            <!-- déconnexion-->
+            {% if app.user %}
+                <a href="{{ path('logout') }}">se déconnecter</a>
+            {% endif %}
+        </div>
         {% block top %}{% endblock %}
         <!-- corps -->
         <div class="container">
