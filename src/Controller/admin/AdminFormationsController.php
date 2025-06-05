@@ -75,7 +75,7 @@ class AdminFormationsController extends AbstractController
      * @param type $table
      * @return Response
      */
-    #[Route('/admin/tri/{champ}/{ordre}/{table}', name: 'admin.formations.sort')]
+    #[Route('/admin/formations/tri/{champ}/{ordre}/{table}', name: 'admin.formations.sort')]
     public function sort($champ, $ordre, $table = ""): Response
     {
         $formations = $this->formationRepository->findAllOrderBy($champ, $ordre, $table);
@@ -94,7 +94,7 @@ class AdminFormationsController extends AbstractController
      * @param type $table
      * @return Response
      */
-    #[Route('/admin/recherche/{champ}/{table}', name: 'admin.formations.findallcontain')]
+    #[Route('/admin/formations/recherche/{champ}/{table}', name: 'admin.formations.findallcontain')]
     public function findAllContain($champ, Request $request, $table = ""): Response
     {
         $valeur = $request->get("recherche");

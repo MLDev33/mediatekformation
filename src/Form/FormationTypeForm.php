@@ -21,6 +21,7 @@ class FormationTypeForm extends AbstractType
     {
         $builder
             ->add('publishedAt', DateType::class, [
+                'required' => true,
                 'widget' => 'single_text',
                 'data' => isset($options['data']) &&
                     $options['data']->getPublishedAt() != null ? $options['data']->getPublishedAt() : new DateTime('now'),
@@ -38,18 +39,21 @@ class FormationTypeForm extends AbstractType
                 ],
             ])
             ->add('title', null, [
-                'label' => 'Titre'
+                'label' => 'Titre',
+                'required' => true,
             ])
             ->add('description', null, [
                 'label' => 'Description',
                 'required' => false
             ])
             ->add('videoId', null, [
+                'required' => true,
                 'label' => 'Identifiant de la vidéo'
             ])
             ->add('playlist', EntityType::class, [
                 'class' => Playlist::class,
                 'choice_label' => 'name',
+                'required' => true,
             ])
             ->add('categories', EntityType::class, [
                 'class' => Categorie::class,

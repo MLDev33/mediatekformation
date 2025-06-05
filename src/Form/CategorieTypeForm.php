@@ -14,7 +14,8 @@ class CategorieTypeForm extends AbstractType
     {
         $builder
             ->add('name', null, [
-                'label' => 'Nouvelle catégorie'
+                'label' => 'Nouvelle catégorie',
+                'required' => true
             ])
         ;
     }
