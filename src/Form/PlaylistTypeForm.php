@@ -15,7 +15,8 @@ class PlaylistTypeForm extends AbstractType
     {
         $builder
             ->add('name', null, [
-                'label' => 'Nom'
+                'label' => 'Nom',
+                'required' => true
             ])
             ->add('description', null, [
                 'label' => 'Description'
