@@ -8,9 +8,13 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 
 /**
- * Description of FormationControllerTest
+ * Tests fonctionnels du FormationController
  *
- * @author m-lordiportable
+ * Vérifie :
+ * - Affichage de la page /formations
+ * - Tri ASC/DESC par différents critères
+ * - Recherche par titre, playlist, catégorie
+ * - Navigation vers une formation via miniature
  */
 class FormationControllerTest extends WebTestCase
 {
@@ -146,3 +150,4 @@ class FormationControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h4', 'Eclipse n°8 : Déploiement');
     }
 }
+

@@ -10,13 +10,19 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * Description of AdminPlaylistControllerTest
+ * Class AdminPlaylistControllerTest
  *
- * @author m-lordiportable
+ * Teste les fonctionnalités du controller AdminPlaylistController.
+ *
  */
 class AdminPlaylistControllerTest extends WebTestCase
 {
 
+    /**
+     * Crée et persiste un nouvel utilisateur avec le rôle admin.
+     *
+     * @return User L'utilisateur créé.
+     */
     private function newUser(): User
     {
         $container = static::getContainer();
@@ -37,6 +43,11 @@ class AdminPlaylistControllerTest extends WebTestCase
         return $user;
     }
 
+    /**
+     * Crée un client authentifié avec un utilisateur administrateur.
+     *
+     * @return KernelBrowser Le client authentifié.
+     */
     private function getAuthenticatedClient(): KernelBrowser
     {
         $client = static::createClient();
@@ -48,6 +59,9 @@ class AdminPlaylistControllerTest extends WebTestCase
         return $client;
     }
 
+    /**
+     * Vérifie que la page d’index des playlists s'affiche correctement.
+     */
     public function testIndex()
     {
         $client = $this->getAuthenticatedClient();
@@ -57,6 +71,9 @@ class AdminPlaylistControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'Bases de la programmation (C#)');
     }
 
+    /**
+     * Vérifie le tri des playlists par nom croissant.
+     */
     public function testSortByNameASC()
     {
         $client = $this->getAuthenticatedClient();
@@ -66,6 +83,9 @@ class AdminPlaylistControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'Bases de la programmation (C#)');
     }
 
+    /**
+     * Vérifie le tri des playlists par nom décroissant.
+     */
     public function testSortByNameDESC()
     {
         $client = $this->getAuthenticatedClient();
@@ -75,6 +95,9 @@ class AdminPlaylistControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'Visual Studio 2019 et C#');
     }
 
+    /**
+     * Vérifie le tri des playlists par nombre de formations croissant.
+     */
     public function testSortByNbFormationASC()
     {
         $client = $this->getAuthenticatedClient();
@@ -84,6 +107,9 @@ class AdminPlaylistControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'Cours de programmation objet');
     }
 
+    /**
+     * Vérifie le tri des playlists par nombre de formations décroissant.
+     */
     public function testSortByNbFormationDESC()
     {
         $client = $this->getAuthenticatedClient();
@@ -93,6 +119,9 @@ class AdminPlaylistControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'Bases de la programmation (C#)');
     }
 
+    /**
+     * Vérifie le filtrage des playlists par nom contenant une chaîne donnée.
+     */
     public function testFindAllContainByPlaylistName()
     {
         $client = $this->getAuthenticatedClient();
@@ -106,6 +135,9 @@ class AdminPlaylistControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'Eclipse et Java');
     }
 
+    /**
+     * Vérifie le filtrage des playlists selon une catégorie spécifique.
+     */
     public function testFindAllByCategorieId()
     {
         $client = $this->getAuthenticatedClient();
@@ -125,6 +157,9 @@ class AdminPlaylistControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'Cours Curseurs');
     }
 
+    /**
+     * Vérifie que le bouton "Modifier" d’une playlist redirige vers la page correcte.
+     */
     public function testLinkButtonEdit()
     {
         $client = $this->getAuthenticatedClient();
@@ -152,5 +187,4 @@ class AdminPlaylistControllerTest extends WebTestCase
         // La page contient un h4 avec le nom correspondant à la bonne playlist
         $this->assertSelectorTextContains('h2', 'Cours de programmation objet');
     }
-
 }

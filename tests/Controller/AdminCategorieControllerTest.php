@@ -8,13 +8,20 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * Description of AdminCategorieControllerTest
+ * Tests fonctionnels pour le contrôleur AdminCategorieController.
  *
- * @author m-lordiportable
+ * Vérifie l'accès et le bon fonctionnement des pages d'administration des catégories
+ * avec tri, recherche et authentification.
+ *
  */
 class AdminCategorieControllerTest extends WebTestCase
 {
 
+    /**
+     * Crée et persiste un utilisateur administrateur en base de test.
+     *
+     * @return User L'utilisateur admin fraîchement créé
+     */
     private function newUser(): User
     {
         $container = static::getContainer();
@@ -35,6 +42,11 @@ class AdminCategorieControllerTest extends WebTestCase
         return $user;
     }
 
+    /**
+     * Crée un client HTTP Symfony authentifié avec un utilisateur admin.
+     *
+     * @return KernelBrowser Le client connecté
+     */
     private function getAuthenticatedClient(): KernelBrowser
     {
         $client = static::createClient();
@@ -46,6 +58,9 @@ class AdminCategorieControllerTest extends WebTestCase
         return $client;
     }
 
+    /**
+     * Test de l'accès à la page principale des catégories admin.
+     */
     public function testIndex()
     {
         $client = $this->getAuthenticatedClient();
@@ -56,6 +71,9 @@ class AdminCategorieControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'Android');
     }
 
+    /**
+     * Test du tri par nom ascendant.
+     */
     public function testSortByNameASC()
     {
         $client = $this->getAuthenticatedClient();
@@ -65,6 +83,9 @@ class AdminCategorieControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'Android');
     }
 
+    /**
+     * Test du tri par nom descendant.
+     */
     public function testSortByNameDESC()
     {
         $client = $this->getAuthenticatedClient();
@@ -74,6 +95,9 @@ class AdminCategorieControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'UML');
     }
 
+    /**
+     * Test de la recherche par nom contenant "Python".
+     */
     public function testFindAllContainByName()
     {
         $client = $this->getAuthenticatedClient();
@@ -89,6 +113,9 @@ class AdminCategorieControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'Python');
     }
 
+    /**
+     * Test du tri par nombre de formations ascendant.
+     */
     public function testSortByNbFormationASC()
     {
         $client = $this->getAuthenticatedClient();
@@ -98,6 +125,9 @@ class AdminCategorieControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h5', 'UML');
     }
 
+    /**
+     * Test du tri par nombre de formations descendant.
+     */
     public function testSortByNbFormationDESC()
     {
         $client = $this->getAuthenticatedClient();

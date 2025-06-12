@@ -7,40 +7,79 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Entité représentant un utilisateur de l'application.
+ *
+ * Implémente les interfaces de sécurité pour l’authentification Symfony.
+ *
+ * @package App\Entity
+ */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
+    /**
+     * Identifiant unique de l'utilisateur.
+     *
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * Nom d'utilisateur unique.
+     *
+     * @var string|null
+     */
     #[ORM\Column(length: 180)]
     private ?string $username = null;
 
     /**
-     * @var list<string> The user roles
+     * Rôles de l'utilisateur dans l'application.
+     * Exemple : ['ROLE_ADMIN', 'ROLE_USER'].
+     *
+     * @var list<string>
      */
     #[ORM\Column]
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * Mot de passe hashé de l'utilisateur.
+     *
+     * @var string|null
      */
     #[ORM\Column]
     private ?string $password = null;
 
+    /**
+     * Retourne l'identifiant unique de l'utilisateur.
+     *
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * Retourne le nom d'utilisateur.
+     *
+     * @return string|null
+     */
     public function getUsername(): ?string
     {
         return $this->username;
     }
 
+    /**
+     * Définit le nom d'utilisateur.
+     *
+     * @param string $username
+     * @return static
+     */
     public function setUsername(string $username): static
     {
         $this->username = $username;
@@ -49,7 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
+     * Identifiant unique pour l'utilisateur, utilisé par Symfony.
      *
      * @see UserInterface
      */
@@ -59,7 +98,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @see UserInterface
+     * Retourne les rôles de l'utilisateur, avec ROLE_USER inclus par défaut.
+     *
+     * @return list<string>
      */
     public function getRoles(): array
     {
@@ -71,6 +112,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Définit les rôles de l'utilisateur.
+     *
      * @param list<string> $roles
      */
     public function setRoles(array $roles): static
@@ -81,6 +124,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Retourne le mot de passe hashé.
+     *
      * @see PasswordAuthenticatedUserInterface
      */
     public function getPassword(): ?string
@@ -88,6 +133,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
+    /**
+     * Définit le mot de passe hashé.
+     *
+     * @param string $password Mot de passe déjà hashé
+     */
     public function setPassword(string $password): static
     {
         $this->password = $password;
@@ -96,7 +146,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Définit le mot de passe en clair temporaire.
+     *
      * @see UserInterface
+     * @return void
      */
     public function eraseCredentials(): void
     {

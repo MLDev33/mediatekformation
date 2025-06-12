@@ -3,26 +3,49 @@
 namespace App\Repository;
 
 use App\Entity\Categorie;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
+ * Repository pour l'entité Categorie.
+ *
+ * Fournit des méthodes personnalisées pour récupérer les catégories.
+ *
  * @extends ServiceEntityRepository<Categorie>
+ *
+ * @package App\Repository
  */
 class CategorieRepository extends ServiceEntityRepository
 {
 
+    /**
+     * Constructeur.
+     *
+     * @param ManagerRegistry $registry Gestionnaire des entités Doctrine.
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Categorie::class);
     }
 
+    /**
+     * Ajoute une catégorie en base de données.
+     *
+     * @param Categorie $entity Entité à ajouter.
+     * @return void
+     */
     public function add(Categorie $entity): void
     {
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * Supprime une catégorie de la base de données.
+     *
+     * @param Categorie $entity Entité à supprimer.
+     * @return void
+     */
     public function remove(Categorie $entity): void
     {
         $this->getEntityManager()->remove($entity);
@@ -30,9 +53,10 @@ class CategorieRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne la liste des catégories des formations d'une playlist
-     * @param type $idPlaylist
-     * @return array
+     * Retourne les catégories liées aux formations d'une playlist donnée.
+     *
+     * @param int $idPlaylist Identifiant de la playlist.
+     * @return Categorie[] Liste des catégories triées par nom.
      */
     public function findAllForOnePlaylist($idPlaylist): array
     {
@@ -47,10 +71,10 @@ class CategorieRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne toutes les catégories triées sur le nom
-     * @param type $champ
-     * @param type $ordre
-     * @return Playlist[]
+     * Retourne toutes les catégories triées par nom.
+     *
+     * @param string $ordre Ordre de tri ('ASC' ou 'DESC').
+     * @return Categorie[]
      */
     public function findAllOrderByName($ordre): array
     {
@@ -62,6 +86,14 @@ class CategorieRepository extends ServiceEntityRepository
                 ->getResult();
     }
 
+    /**
+     * Recherche des catégories contenant une valeur dans un champ donné.
+     *
+     * @param string $champ Nom du champ à filtrer.
+     * @param string $valeur Valeur à rechercher.
+     * @param string $table Nom optionnel d'une table pour jointure supplémentaire.
+     * @return Categorie[]
+     */
     public function findByContainValue($champ, $valeur, $table = ""): array
     {
         if ($valeur == "") {
@@ -89,6 +121,12 @@ class CategorieRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Retourne toutes les catégories triées selon le nombre de formations associées.
+     *
+     * @param string $ordre Ordre de tri ('ASC' ou 'DESC').
+     * @return Categorie[]
+     */
     public function findAllOrderByFormationsCount($ordre): array
     {
         return $this->createQueryBuilder('c')
@@ -99,6 +137,12 @@ class CategorieRepository extends ServiceEntityRepository
                 ->getResult();
     }
 
+    /**
+     * Recherche une catégorie par son nom exact (insensible à la casse).
+     *
+     * @param string $name Nom de la catégorie.
+     * @return Categorie|null
+     */
     public function findOneByName(string $name): ?Categorie
     {
         return $this->createQueryBuilder('c')

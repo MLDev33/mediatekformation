@@ -24,3 +24,9 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+###> phpDocumentor PHAR binary ###
+/bin/phpdoc.phar
+
+###> Documentation output directory ###
+.phpdoc/
