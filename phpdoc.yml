@@ -1,0 +1,29 @@
+## YAML Template.
+---
+title: Documentation technique - Mediatek
+
+paths:
+  default: src
+  ignore:
+      - vendor
+      - var
+      - bin
+      - test
+      - public
+      - config
+      - ".env"
+      - ".env.local"
+      - ".gitignore"
+
+settings:
+  markers:
+    - TODO
+    - FIXME
+  cache: build/phpdoc/cache
+  log:
+    level: debug
+    file: build/phpdoc/log/phpdoc.log
+
+templates:
+  default: clean
+  target: docs

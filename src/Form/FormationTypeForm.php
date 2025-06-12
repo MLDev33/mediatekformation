@@ -14,9 +14,31 @@ use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use DateTime;
 
+/**
+ * Formulaire pour la gestion des formations.
+ *
+ * Définit la structure et les options du formulaire pour créer ou éditer une entité Formation.
+ *
+ * @package App\Form
+ */
 class FormationTypeForm extends AbstractType
 {
 
+    /**
+     * Construction du formulaire.
+     *
+     * Ajoute les champs suivants :
+     * - publishedAt : date de parution (champ date avec contraintes sur la date max)
+     * - title : titre de la formation (texte obligatoire)
+     * - description : description de la formation (texte optionnel)
+     * - videoId : identifiant de la vidéo (texte obligatoire)
+     * - playlist : association à une Playlist (entité liée, choix unique)
+     * - categories : association à une ou plusieurs catégories (entités liées, choix multiple)
+     * - submit : bouton d'enregistrement
+     *
+     * @param FormBuilderInterface $builder Constructeur du formulaire.
+     * @param array $options Options passées lors de la création du formulaire.
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -24,7 +46,7 @@ class FormationTypeForm extends AbstractType
                 'required' => true,
                 'widget' => 'single_text',
                 'data' => isset($options['data']) &&
-                    $options['data']->getPublishedAt() != null ? $options['data']->getPublishedAt() : new DateTime('now'),
+                $options['data']->getPublishedAt() != null ? $options['data']->getPublishedAt() : new DateTime('now'),
                 'label' => 'Date de parution',
                 'html5' => true,
                 'attr' => [
@@ -35,7 +57,7 @@ class FormationTypeForm extends AbstractType
                     new LessThanOrEqual([
                         'value' => 'today',
                         'message' => "La date ne peut pas être postérieure à aujourd'hui."
-                    ]),
+                        ]),
                 ],
             ])
             ->add('title', null, [
@@ -68,6 +90,13 @@ class FormationTypeForm extends AbstractType
         ;
     }
 
+    /**
+     * Configuration des options du formulaire.
+     *
+     * Lie ce formulaire à la classe de données Formation pour la transformation automatique.
+     *
+     * @param OptionsResolver $resolver Résolveur d'options du formulaire.
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

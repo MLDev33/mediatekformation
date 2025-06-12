@@ -7,22 +7,43 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Repository pour l'entité Formation.
+ *
  * @extends ServiceEntityRepository<Formation>
+ *
+ * @package App\Repository
  */
 class FormationRepository extends ServiceEntityRepository
 {
 
+    /**
+     * Constructeur.
+     *
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Formation::class);
     }
 
+    /**
+     * Ajoute une formation en base de données.
+     *
+     * @param Formation $entity
+     * @return void
+     */
     public function add(Formation $entity): void
     {
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * Supprime une formation de la base de données.
+     *
+     * @param Formation $entity
+     * @return void
+     */
     public function remove(Formation $entity): void
     {
         $this->getEntityManager()->remove($entity);
@@ -30,10 +51,11 @@ class FormationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne toutes les formations triées sur un champ
-     * @param type $champ
-     * @param type $ordre
-     * @param type $table si $champ dans une autre table
+     * Retourne toutes les formations triées sur un champ donné.
+     *
+     * @param string $champ Champ de tri.
+     * @param string $ordre Ordre de tri ('ASC' ou 'DESC').
+     * @param string $table Nom de la relation si le champ appartient à une autre table (optionnel).
      * @return Formation[]
      */
     public function findAllOrderBy($champ, $ordre, $table = ""): array
@@ -53,11 +75,12 @@ class FormationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Enregistrements dont un champ contient une valeur
-     * ou tous les enregistrements si la valeur est vide
-     * @param type $champ
-     * @param type $valeur
-     * @param type $table si $champ dans une autre table
+     * Recherche des formations dont un champ contient une valeur donnée.
+     * Si la valeur est vide, retourne toutes les formations.
+     *
+     * @param string $champ Champ à rechercher.
+     * @param string $valeur Valeur à chercher.
+     * @param string $table Relation pour le champ (optionnel).
      * @return Formation[]
      */
     public function findByContainValue($champ, $valeur, $table = ""): array
@@ -84,8 +107,9 @@ class FormationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne les n formations les plus récentes
-     * @param type $nb
+     * Retourne les n formations les plus récentes.
+     *
+     * @param int $nb Nombre de formations à retourner.
      * @return Formation[]
      */
     public function findAllLasted($nb): array
@@ -98,9 +122,10 @@ class FormationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne la liste des formations d'une playlist
-     * @param type $idPlaylist
-     * @return array
+     * Retourne toutes les formations d'une playlist donnée.
+     *
+     * @param int $idPlaylist Identifiant de la playlist.
+     * @return Formation[]
      */
     public function findAllForOnePlaylist($idPlaylist): array
     {

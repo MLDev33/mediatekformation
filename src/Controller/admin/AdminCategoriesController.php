@@ -6,43 +6,46 @@ use App\Entity\Categorie;
 use App\Form\CategorieTypeForm;
 use App\Repository\CategorieRepository;
 use App\Repository\FormationRepository;
-use App\Repository\PlaylistRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * Description of AdminCategoriesController
- *
- * @author m-lordiportable
+ * Contrôleur de gestion des catégories côté administrateur.
  */
+#[IsGranted('ROLE_ADMIN')]
 class AdminCategoriesController extends AbstractController
 {
 
     /**
-     *
-     * @var PlaylistRepository
-     */
-    private $playlistRepository;
-
-    /**
+     * Repository des formations.
      *
      * @var FormationRepository
      */
     private $formationRepository;
 
     /**
+     * Repository des catégories.
      *
      * @var CategorieRepository
      */
     private $categorieRepository;
 
     /**
-     * Début de chemin vers les playlists
+     * Chemin du template pour l'affichage des catégories.
      */
-    private const CHEMINCATEGORIES = "admin/categories/admin.categories.html.twig";
+    private const TEMPLATE_LIST_CATEGORIES = "admin/categories/admin.categories.html.twig";
 
+    /**
+     * Constructeur du contrôleur des catégories.
+     *
+     * Initialise les repositories nécessaires pour la gestion des catégories et des formations.
+     *
+     * @param CategorieRepository $categorieRepository  Repository des catégories
+     * @param FormationRepository $formationRespository Repository des formations
+     */
     public function __construct(
         CategorieRepository $categorieRepository,
         FormationRepository $formationRespository
@@ -53,67 +56,96 @@ class AdminCategoriesController extends AbstractController
     }
 
     /**
-     * @Route("/categories", name="categories")
-     * @return Response
+     * Crée un formulaire d’ajout de catégorie avec les options POST prédéfinies.
+     *
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    private function createCategorieForm()
+    {
+        return $this->createForm(CategorieTypeForm::class, new Categorie(), [
+                'action' => $this->generateUrl('admin.categorie.ajouter'),
+                'method' => 'POST',
+        ]);
+    }
+
+    /**
+     * Affiche la liste des catégories avec le formulaire d'ajout.
+     *
+     * Traite la soumission du formulaire si elle a lieu.
+     *
+     * @param Request $request  Requête contenant éventuellement les données du formulaire soumis
+     * @return Response Réponse HTTP avec le rendu de la page
      */
     #[Route('/admin/categories', name: 'admin.categories')]
     public function index(Request $request): Response
     {
         $categories = $this->categorieRepository->findAllOrderByName('ASC');
 
-        $categorie = new Categorie();
-        $formCategorie = $this->createForm(CategorieTypeForm::class, $categorie, [
-            'action' => $this->generateUrl('admin.categorie.ajouter'),
-            'method' => 'POST',
-        ]);
+        $formCategorie = $this->createCategorieForm();
+
         $formCategorie->handleRequest($request);
 
         if ($formCategorie->isSubmitted() && $formCategorie->isValid()) {
+            $categorie = $formCategorie->getData();
             $this->categorieRepository->add($categorie);
             $this->addFlash('success', "Catégorie  \"{$categorie->getName()}\" ajoutée.");
             return $this->redirectToRoute('admin.categories');
         }
 
-        return $this->render(self::CHEMINCATEGORIES, [
+        return $this->render(self::TEMPLATE_LIST_CATEGORIES, [
                 'categories' => $categories,
                 'formcategorie' => $formCategorie->createView()
         ]);
     }
 
+    /**
+     * Trie dynamiquement les catégories selon le champ et l’ordre spécifiés.
+     *
+     * Permet de trier par nom ou par nombre de formations.
+     *
+     * @param string $champ Champ à trier (ex. : "name", "nbFormations")
+     * @param string $ordre Ordre de tri (ex. : "ASC" ou "DESC")
+     * @return Response Réponse HTTP avec le rendu de la page
+     */
     #[Route('/admin/categories/tri/{champ}/{ordre}', name: 'admin.categories.sort')]
-    public function sort($champ, $ordre): Response
+    public function sort(string $champ, string $ordre): Response
     {
-        $categorie = new Categorie();
-        $formCategorie = $this->createForm(CategorieTypeForm::class, $categorie, [
-            'action' => $this->generateUrl('admin.categorie.ajouter'),
-            'method' => 'POST',
-        ]);
+        $formCategorie = $this->createCategorieForm();
 
         if ($champ === 'name') {
             $categories = $this->categorieRepository->findAllOrderByName($ordre);
-        }
-        if ($champ === 'nbFormations') {
+        } elseif ($champ === 'nbFormations') {
             $categories = $this->categorieRepository->findAllOrderByFormationsCount($ordre);
+        } else {
+            $categories = [];
         }
 
-        return $this->render(self::CHEMINCATEGORIES, [
+        return $this->render(self::TEMPLATE_LIST_CATEGORIES, [
                 'categories' => $categories,
                 'formcategorie' => $formCategorie->createView()
         ]);
     }
 
+    /**
+     * Recherche les catégories contenant une valeur dans un champ spécifique,
+     * avec option de filtrage par une table associée.
+     *
+     * Utilise les paramètres dynamiques pour effectuer une recherche souple.
+     *
+     * @param string $champ Champ sur lequel effectuer la recherche (ex. : "name")
+     * @param Request $request  Requête contenant le champ "recherche"
+     * @param string $table Nom de la table associée pour filtrage avancé (optionnel)
+     * @return Response Réponse HTTP avec le rendu de la page
+     */
     #[Route('/admin/categories/recherche/{champ}/{table}', name: 'admin.categories.findallcontain')]
-    public function findAllContain($champ, Request $request, $table = ""): Response
+    public function findAllContain(string $champ, Request $request, string $table = ""): Response
     {
-        $categorie = new Categorie();
-        $formCategorie = $this->createForm(CategorieTypeForm::class, $categorie, [
-            'action' => $this->generateUrl('admin.categorie.ajouter'),
-            'method' => 'POST',
-        ]);
+        $formCategorie = $this->createCategorieForm();
 
         $valeur = $request->get("recherche");
         $categories = $this->categorieRepository->findByContainValue($champ, $valeur, $table);
-        return $this->render(self::CHEMINCATEGORIES, [
+
+        return $this->render(self::TEMPLATE_LIST_CATEGORIES, [
                 'categories' => $categories,
                 'valeur' => $valeur,
                 'table' => $table,
@@ -122,21 +154,22 @@ class AdminCategoriesController extends AbstractController
     }
 
     /**
-     * Supprime une playlists.
+     * Supprime une catégorie si elle ne contient aucune formation.
      *
-     * @param type $id
-     * @param Request $request
-     * @return Response
-     * @throws type
+     * Vérifie le token CSRF et l'existence de la catégorie.
+     *
+     * @param int $id   Identifiant de la catégorie à supprimer
+     * @param Request $request Requête contenant le token CSRF
+     * @return Response Réponse HTTP avec le rendu de la page
      */
     #[Route('/admin/categories/supprimer/{id<\d+>}', name: 'admin.categorie.supprimer')]
-    public function supprimer($id, Request $request): Response
+    public function supprimer(int $id, Request $request): Response
     {
         $categorie = $this->categorieRepository->find($id);
-        $formationsCount = $categorie->getFormations()->count();
 
         if (!$categorie) {
-            throw $this->createNotFoundException('Catégorie introuvable');
+            $this->addFlash('error', 'Catégorie introuvable');
+            return $this->redirectToRoute('admin.categories');
         }
 
         if (!$this->isCsrfTokenValid('supprimer_categorie_' . $categorie->getId(), $request->request->get('_token'))) {
@@ -144,8 +177,10 @@ class AdminCategoriesController extends AbstractController
             return $this->redirectToRoute('admin.categories');
         }
 
+        $formationsCount = $categorie->getFormations()->count();
+
         if ($formationsCount > 0) {
-            $this->addFlash('warning', "La categorie \"{$categorie->getName()}\" contient $formationsCount formations et ne peut pas être supprimée.");
+            $this->addFlash('warning', "La catégorie \"{$categorie->getName()}\" contient $formationsCount formations et ne peut pas être supprimée.");
             return $this->redirectToRoute('admin.categories');
         }
 
@@ -156,20 +191,21 @@ class AdminCategoriesController extends AbstractController
     }
 
     /**
-     * Ajoute une nouvelle catégorie.
+     * Ajoute une nouvelle catégorie après validation du formulaire.
      *
-     * @param Request $request
-     * @return Response
+     * Vérifie que le nom n'est pas vide et qu’il n’existe pas déjà.
+     *
+     * @param Request $request Requête contenant les données du formulaire soumis
+     * @return Response Réponse HTTP avec le rendu de la page
      */
     #[Route('/admin/categorie/ajouter', name: 'admin.categorie.ajouter')]
     public function ajouter(Request $request): Response
     {
-        $categorie = new Categorie();
-        $formCategorie = $this->createForm(CategorieTypeForm::class, $categorie);
+        $formCategorie = $this->createCategorieForm();
         $formCategorie->handleRequest($request);
 
         if ($formCategorie->isSubmitted() && $formCategorie->isValid()) {
-
+            $categorie = $formCategorie->getData();
             $name = trim($categorie->getName());
 
             if ($name === '') {

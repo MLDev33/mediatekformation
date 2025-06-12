@@ -83,7 +83,8 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "phpdoc": "./bin/phpdoc -d src -t docs"
     },
     "conflict": {
         "symfony/symfony": "*"
